@@ -18,3 +18,5 @@ wandb
 .vscode
 data/aids
 data/proteins_g
+
+envs
