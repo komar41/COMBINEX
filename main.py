@@ -26,12 +26,23 @@ def log_params(cfg: DictConfig) -> None:
     wandb.log({"params": param_table})
     
 def set_run_name(cfg, run):
-    
     from datetime import datetime
-    name = cfg.explainer.name if cfg.explainer.name != "combined" else cfg.explainer.name+f"-{cfg.scheduler.policy}"
-    run_name: str = f"{cfg.task.name}_{name}_{cfg.dataset.name}_{cfg.model.name}_{cfg.optimizer.name}_{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    import re
+    import os
+
+    name = cfg.explainer.name if cfg.explainer.name != "combined" else cfg.explainer.name + f"-{cfg.scheduler.policy}"
+
+    # ✅ Windows-safe timestamp (no colons)
+    ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    run_name: str = f"{cfg.task.name}_{name}_{cfg.dataset.name}_{cfg.model.name}_{cfg.optimizer.name}_{ts}"
+
+    # ✅ Extra safety: remove characters invalid in Windows filenames
+    run_name = re.sub(r'[<>:"/\\|?*]', "-", run_name).strip().rstrip(".")
+
     run_dir = os.path.join("data", "artifacts", run_name)
     os.makedirs(run_dir, exist_ok=True)
+
     run.name = run_name
     run.save()
 
