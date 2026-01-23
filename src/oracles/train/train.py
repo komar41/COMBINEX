@@ -146,12 +146,14 @@ class Trainer:
 			train_loss, train_accuracy = self._train(epoch=epoch)
 			test_loss, test_accuracy = self._test()
 			print(f"Epoch: {epoch:4d} Train Loss: {train_loss:.4f} Train Acc: {train_accuracy:.4f} Test Loss: {test_loss:.4f} Test Acc: {test_accuracy:.4f}")
-			wandb.log({
-				"oracle_train_loss": train_loss.detach().cpu().item(),
-				"oracle_train_accuracy": train_accuracy.item(),
-				"oracle_test_loss": test_loss.detach().cpu().item(),
-				"oracle_test_accuracy": test_accuracy.item()
-			})
+			
+			if wandb.run is not None:
+				wandb.log({
+					"oracle_train_loss": train_loss.detach().cpu().item(),
+					"oracle_train_accuracy": train_accuracy.item(),
+					"oracle_test_loss": test_loss.detach().cpu().item(),
+					"oracle_test_accuracy": test_accuracy.item()
+				})
 			metrics.loc[epoch] = [epoch, train_loss.detach().cpu().item(), train_accuracy.item(), test_loss.detach().cpu().item(), test_accuracy.item()]
 
 		if not os.path.exists(f"data/models"):

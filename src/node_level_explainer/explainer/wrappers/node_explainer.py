@@ -55,6 +55,8 @@ class NodesExplainerWrapper(Wrapper):
         
         # Determine the device to use (GPU if available and configured, otherwise CPU)
         device = "cuda" if torch.cuda.is_available() and self.cfg.device == "cuda" else "cpu"
+
+        print(f"Using device: {device}")
         
         # Set the current explainer name and datainfo
         self.current_explainer_name = explainer

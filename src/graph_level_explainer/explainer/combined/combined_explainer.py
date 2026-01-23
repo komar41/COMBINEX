@@ -24,11 +24,17 @@ class CombinedExplainer(Explainer):
     def explain(self, graph: Data, oracle):
 
         self.best_loss = np.inf
-        self.graph_perturber = GraphPerturber(cfg=self.cfg, 
-                                      model=oracle,
-                                      datainfo=self.datainfo, 
-                                      graph=graph,
-                                      device="cuda").to(self.device)
+        # pick a safe device
+        device = "cuda" if torch.cuda.is_available() and self.cfg.device == "cuda" else "cpu"
+        self.device = device  # in case Explainer set it earlier
+
+        self.graph_perturber = GraphPerturber(
+            cfg=self.cfg,
+            model=oracle,
+            datainfo=self.datainfo,
+            graph=graph,
+            device=device,
+        ).to(device)
         
         self.graph_perturber.deactivate_model()
         

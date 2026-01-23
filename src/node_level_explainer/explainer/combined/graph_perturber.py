@@ -32,19 +32,19 @@ class GraphPerturber(Perturber):
         self.beta = 0.5
         self.EP_x = Parameter(torch.ones(len(graph.edge_index[0]), device=self.device))
         self.graph_sample = graph
-        self.device = device
+        # self.device = device
         
         # Dataset characteristics
         self.num_classes = datainfo.num_classes
         self.num_nodes = graph.x.shape[0]
         self.num_features = datainfo.num_features
-        self.min_range = datainfo.min_range.to(device)
-        self.max_range = datainfo.max_range.to(device)
+        self.min_range = datainfo.min_range.to(self.device)
+        self.max_range = datainfo.max_range.to(self.device)
         
         # Explainer characteristics
         self.discrete_features_addition: bool = True
-        self.discrete_features_mask: Tensor = datainfo.discrete_mask.to(device)
-        self.continous_features_mask: Tensor = 1 - datainfo.discrete_mask.to(device)
+        self.discrete_features_mask: Tensor = datainfo.discrete_mask.to(self.device)
+        self.continous_features_mask: Tensor = 1 - datainfo.discrete_mask.to(self.device)
         # Model's parameters
         self.P_x = Parameter(torch.zeros(self.num_nodes, self.num_features, device=self.device))
         
